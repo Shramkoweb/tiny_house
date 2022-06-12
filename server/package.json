@@ -7,6 +7,7 @@
     "start": "nodemon -r dotenv/config ./src/index.ts",
     "build": "tsc -p ./",
     "lint": "eslint . --ext .ts",
+    "seed": "ts-node -r dotenv/config temp/seed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
