@@ -8,9 +8,10 @@ import {
   resolvers,
 } from './graphql';
 
-const PORT = 9000;
+import {connectDatabase} from './database';
 
 async function startApolloServer() {
+  const db = await connectDatabase();
   const app = express();
   const httpServer = http.createServer(app);
 
@@ -18,14 +19,15 @@ async function startApolloServer() {
     typeDefs,
     resolvers,
     csrfPrevention: true,
+    context: () => ({db}),
     plugins: [ApolloServerPluginDrainHttpServer({httpServer})],
   });
 
   await server.start();
   server.applyMiddleware({app, path: '/api'});
 
-  await new Promise<void>(resolve => httpServer.listen({port: PORT}, resolve));
-  console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+  await new Promise<void>(resolve => httpServer.listen({port: process.env.PORT}, resolve));
+  console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`);
 }
 
 startApolloServer();
