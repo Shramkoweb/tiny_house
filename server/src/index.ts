@@ -1,25 +1,31 @@
 import express from 'express';
+import {ApolloServer} from 'apollo-server-express';
+import {ApolloServerPluginDrainHttpServer} from 'apollo-server-core';
+import http from 'http';
 
-import {listings} from './listings';
+import {
+  typeDefs,
+  resolvers,
+} from './graphql';
 
 const PORT = 9000;
 
-const app = express();
+async function startApolloServer() {
+  const app = express();
+  const httpServer = http.createServer(app);
 
-app.get('/listings', (_req, res) => res.send(listings));
-app.delete('/listings/:id', ((req, res) => {
-  const id: string = req.params.id;
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    csrfPrevention: true,
+    plugins: [ApolloServerPluginDrainHttpServer({httpServer})],
+  });
 
-  console.log(id);
+  await server.start();
+  server.applyMiddleware({app, path: '/api'});
 
-  for (let i = 0; i < listings.length; i++) {
-    if (listings[i].id === id) {
-      return res.send(listings.splice(i, 1));
-    }
-  }
+  await new Promise<void>(resolve => httpServer.listen({port: PORT}, resolve));
+  console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+}
 
-  return res.send("failed to deleted listing");
-}));
-
-app.listen(PORT, () => console.log(`[app] : http://localhost:${PORT}`));
-
+startApolloServer();
