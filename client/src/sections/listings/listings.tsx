@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {server} from '../../lib/api';
 import {ListingsData, DeleteListingData, DeleteListingVariables} from './types';
+import {server, useQuery} from '../../lib/api';
 
 const LISTINGS = `
   query Listings {
@@ -34,24 +34,43 @@ interface ListingsProps {
 export const Listings = (props: ListingsProps) => {
   const {title} = props;
 
-  const fetchListings = async () => {
-    const {data} = await server.fetch<ListingsData>({query: LISTINGS});
-    console.log(data);
-  };
+  const {data, refetch, isLoading, error} = useQuery<ListingsData>(LISTINGS);
 
-  const deleteListing = async () => {
-    const {data} = await server.fetch<DeleteListingData,
-      DeleteListingVariables>({
+  const deleteListing = async (id: string) => {
+    await server.fetch<DeleteListingData, DeleteListingVariables>({
       query: DELETE_LISTING,
       variables: {
-        id: '62a639af90c8da5f7d22c1ed',
+        id,
       },
     });
-    console.log(data); // check the console to see the result of the mutation!
+    refetch();
   };
+
+  const listings = data?.listings ?? null;
+
+  const listingsList = listings ? (
+    <ul>
+      {listings.map(listing => {
+        return (
+          <li key={listing.id}>
+            {listing.title}{' '}
+            <button onClick={() => deleteListing(listing.id)}>Delete</button>
+          </li>
+        );
+      })}
+    </ul>
+  ) : null;
+
+  if (isLoading) {
+    return <h2>Loading...</h2>;
+  }
+
+  if (error) {
+    return <h2>Uh oh! Something went wrong - please try again later :(</h2>;
+  }
+
   return <>
     <h2>{title}</h2>
-    <button onClick={fetchListings}>Query Listings!</button>
-    <button onClick={deleteListing}>Delete a listing!</button>
+    {listingsList}
   </>;
 };
