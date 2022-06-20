@@ -1,45 +1,37 @@
-import {useCallback, useEffect, useState} from 'react';
-import {server} from './server';
+import {useCallback, useEffect, useReducer, Reducer} from 'react';
 
-interface State<TData> {
-  data: TData | null;
-  isLoading: boolean;
-  error: boolean;
-}
+import {server} from './server';
+import {fetchReducer} from './fetchReducer';
+import {
+  fetchError,
+  fetchSuccess,
+  startFetch,
+} from './actions';
 
 export const useQuery = <TData = unknown>(query: string) => {
-  const [state, setState] = useState<State<TData>>({
+  const [state, dispatch] = useReducer(fetchReducer<TData>(), {
     data: null,
     isLoading: false,
     error: false,
   });
 
-  const fetch = useCallback(() => {
-    const fetchApi = async () => {
-      try {
-        setState({data: null, isLoading: true, error: false});
-
-        const {data, errors} = await server.fetch<TData>({
-          query,
-        });
-
-        if (errors && errors.length) {
-          throw new Error(errors[0].message);
-        }
-
-        setState({data, isLoading: false, error: false});
-      } catch (err) {
-        setState({data: null, isLoading: false, error: true});
-        throw console.error(err);
+  const fetchApi = useCallback(async () => {
+    try {
+      dispatch(startFetch());
+      const {data, errors} = await server.fetch<TData>({query});
+      if (errors && errors.length) {
+        throw new Error(errors[0].message);
       }
-    };
-
-    fetchApi();
+      dispatch(fetchSuccess(data));
+    } catch (error) {
+      dispatch(fetchError());
+      throw console.error(error);
+    }
   }, [query]);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    fetchApi();
+  }, [fetchApi]);
 
-  return {...state, refetch: fetch};
+  return {...state, refetch: fetchApi};
 };
