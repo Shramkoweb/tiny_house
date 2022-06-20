@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {ListingsData, DeleteListingData, DeleteListingVariables} from './types';
-import {server, useQuery} from '../../lib/api';
+import {useMutation, useQuery} from '../../lib/api';
 
 const LISTINGS = `
   query Listings {
@@ -35,18 +35,21 @@ export const Listings = (props: ListingsProps) => {
   const {title} = props;
 
   const {data, refetch, isLoading, error} = useQuery<ListingsData>(LISTINGS);
+  const [
+    {isLoading: deleteListingLoading},
+    deleteListing,
+  ] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING);
 
-  const deleteListing = async (id: string) => {
-    await server.fetch<DeleteListingData, DeleteListingVariables>({
-      query: DELETE_LISTING,
-      variables: {
-        id,
-      },
-    });
+
+  const handleDeleteListing = async (id: string) => {
+    await deleteListing({id});
     refetch();
   };
 
   const listings = data?.listings ?? null;
+  const deleteListingLoadingMessage = deleteListingLoading ? (
+    <h4>Deletion in progress...</h4>
+  ) : null;
 
   const listingsList = listings ? (
     <ul>
@@ -54,7 +57,7 @@ export const Listings = (props: ListingsProps) => {
         return (
           <li key={listing.id}>
             {listing.title}{' '}
-            <button onClick={() => deleteListing(listing.id)}>Delete</button>
+            <button onClick={() => handleDeleteListing(listing.id)}>Delete</button>
           </li>
         );
       })}
@@ -72,5 +75,6 @@ export const Listings = (props: ListingsProps) => {
   return <>
     <h2>{title}</h2>
     {listingsList}
+    {deleteListingLoadingMessage}
   </>;
 };
