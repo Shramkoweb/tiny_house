@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {MouseEvent} from 'react';
 
-import {ListingsData, DeleteListingData, DeleteListingVariables} from './types';
-import {useMutation, useQuery} from '../../lib/api';
+import {DeleteListingData, DeleteListingVariables, ListingsData} from './types';
+import {gql, useQuery, useMutation} from '@apollo/client';
 
-const LISTINGS = `
+const LISTINGS = gql`
   query Listings {
     listings {
       id
@@ -19,7 +19,7 @@ const LISTINGS = `
   }
 `;
 
-const DELETE_LISTING = `
+const DELETE_LISTING = gql`
   mutation DeleteListing($id: ID!) {
     deleteListing(id: $id) {
       id
@@ -34,47 +34,34 @@ interface ListingsProps {
 export const Listings = (props: ListingsProps) => {
   const {title} = props;
 
-  const {data, refetch, isLoading, error} = useQuery<ListingsData>(LISTINGS);
-  const [
-    {isLoading: deleteListingLoading},
-    deleteListing,
-  ] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING);
 
+  const {error, data, refetch, loading} = useQuery<ListingsData>(LISTINGS);
+  const [deleteListing] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING);
 
-  const handleDeleteListing = async (id: string) => {
-    await deleteListing({id});
-    refetch();
+  const handleDeleteListing = (evt: MouseEvent<HTMLButtonElement>) => {
+    const fetchDelete = async () => {
+      await deleteListing({variables: {id: evt.currentTarget.id}});
+      refetch();
+    };
+
+    fetchDelete();
   };
 
-  const listings = data?.listings ?? null;
-  const deleteListingLoadingMessage = deleteListingLoading ? (
-    <h4>Deletion in progress...</h4>
-  ) : null;
-
-  const listingsList = listings ? (
-    <ul>
-      {listings.map(listing => {
-        return (
-          <li key={listing.id}>
-            {listing.title}{' '}
-            <button onClick={() => handleDeleteListing(listing.id)}>Delete</button>
-          </li>
-        );
-      })}
-    </ul>
-  ) : null;
-
-  if (isLoading) {
-    return <h2>Loading...</h2>;
-  }
-
-  if (error) {
-    return <h2>Uh oh! Something went wrong - please try again later :(</h2>;
-  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
 
   return <>
     <h2>{title}</h2>
-    {listingsList}
-    {deleteListingLoadingMessage}
+    {data?.listings && (
+      <ul>
+        {data?.listings.map(listing => {
+          return (
+            <li key={listing.id}>
+              {listing.title}{' '}
+              <button id={listing.id} onClick={handleDeleteListing}>Delete</button>
+            </li>
+          );
+        })}
+      </ul>)}
   </>;
 };
