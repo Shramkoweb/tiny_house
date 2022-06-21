@@ -1,3 +1,6 @@
+<a href="https://codeclimate.com/github/Shramkoweb/tiny_house/maintainability"><img src="https://api.codeclimate.com/v1/badges/3f329416633a149a963e/maintainability" /></a>
+<a href="https://codeclimate.com/github/Shramkoweb/tiny_house/test_coverage"><img src="https://api.codeclimate.com/v1/badges/3f329416633a149a963e/test_coverage" /></a>
+
 # Tiny House
 
 TinyHouse is a home-sharing app built for a full-stack React Masterclass
