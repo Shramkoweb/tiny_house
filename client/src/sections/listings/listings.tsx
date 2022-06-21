@@ -1,31 +1,13 @@
 import React, {MouseEvent} from 'react';
+import {useQuery, useMutation} from '@apollo/client';
 
-import {DeleteListingData, DeleteListingVariables, ListingsData} from './types';
-import {gql, useQuery, useMutation} from '@apollo/client';
-
-const LISTINGS = gql`
-  query Listings {
-    listings {
-      id
-      title
-      image
-      address
-      price
-      numOfGuests
-      numOfBeds
-      numOfBaths
-      rating
-    }
-  }
-`;
-
-const DELETE_LISTING = gql`
-  mutation DeleteListing($id: ID!) {
-    deleteListing(id: $id) {
-      id
-    }
-  }
-`;
+import {
+  ListingsDocument,
+  DeleteListingDocument,
+  DeleteListingMutationVariables,
+  DeleteListingMutation,
+  ListingsQuery,
+} from '../../../graphql/generated';
 
 interface ListingsProps {
   title: string;
@@ -35,8 +17,8 @@ export const Listings = (props: ListingsProps) => {
   const {title} = props;
 
 
-  const {error, data, refetch, loading} = useQuery<ListingsData>(LISTINGS);
-  const [deleteListing] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING);
+  const {error, data, refetch, loading} = useQuery<ListingsQuery>(ListingsDocument);
+  const [deleteListing] = useMutation<DeleteListingMutation, DeleteListingMutationVariables>(DeleteListingDocument);
 
   const handleDeleteListing = (evt: MouseEvent<HTMLButtonElement>) => {
     const fetchDelete = async () => {
