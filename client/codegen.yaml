@@ -1,7 +1,7 @@
 schema: http://localhost:9000/api
-documents: './src/**/*.tsx'
+documents: './src/**/*.graphql'
 generates:
-  graphql/generated.ts:
+  ./src/generated.ts:
     plugins:
       - typescript
       - typescript-operations
