@@ -19,6 +19,7 @@ async function startApolloServer() {
     typeDefs,
     resolvers,
     csrfPrevention: true,
+    introspection: true,
     context: () => ({db}),
     plugins: [ApolloServerPluginDrainHttpServer({httpServer})],
   });
