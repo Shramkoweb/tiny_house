@@ -1,6 +1,5 @@
-import {connectDatabase} from '../src/database';
-import {ObjectId} from 'mongodb';
-import {Listing} from '../src/lib/types';
+import { connectDatabase } from '../src/database';
+import { USERS, LISTINGS } from './mock.data';
 
 const seed = async () => {
   try {
@@ -8,53 +7,18 @@ const seed = async () => {
 
     const db = await connectDatabase();
 
-    const listings: Listing[] = [
-      {
-        _id: new ObjectId(),
-        title: 'Clean and fully furnished apartment. 5 min away from CN Tower',
-        image:
-          'https://res.cloudinary.com/tiny-house/image/upload/v1560641352/mock/Toronto/toronto-listing-1_exv0tf.jpg',
-        address: '3210 Scotchmere Dr W, Toronto, ON, CA',
-        price: 10000,
-        numOfGuests: 2,
-        numOfBeds: 1,
-        numOfBaths: 2,
-        rating: 5
-      },
-      {
-        _id: new ObjectId(),
-        title: 'Luxurious home with private pool',
-        image:
-          'https://res.cloudinary.com/tiny-house/image/upload/v1560645376/mock/Los%20Angeles/los-angeles-listing-1_aikhx7.jpg',
-        address: '100 Hollywood Hills Dr, Los Angeles, California',
-        price: 15000,
-        numOfGuests: 2,
-        numOfBeds: 1,
-        numOfBaths: 1,
-        rating: 4
-      },
-      {
-        _id: new ObjectId(),
-        title: 'Single bedroom located in the heart of downtown San Francisco',
-        image:
-          'https://res.cloudinary.com/tiny-house/image/upload/v1560646219/mock/San%20Fransisco/san-fransisco-listing-1_qzntl4.jpg',
-        address: '200 Sunnyside Rd, San Francisco, California',
-        price: 25000,
-        numOfGuests: 3,
-        numOfBeds: 2,
-        numOfBaths: 2,
-        rating: 3
-      }
-    ]
-
-    for (const listing of listings) {
+    for (const listing of LISTINGS) {
       await db.listings.insertOne(listing);
+    }
+
+    for (const user of USERS) {
+      await db.users.insertOne(user);
     }
   } catch (error) {
     throw new Error('failed to seed database');
   }
 
-  process.exit(0)
+  process.exit(0);
 };
 
 seed();

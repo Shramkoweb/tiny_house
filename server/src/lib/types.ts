@@ -27,6 +27,13 @@ export interface Booking {
 
 export interface Listing {
   _id: ObjectId;
+  price: number;
+  numOfBeds: number;
+  rating: number;
+  numOfBaths: number;
+  numOfStars: number;
+  numOfVotes: number;
+  numOfGuests: number;
   title: string;
   description: string;
   image: string;
