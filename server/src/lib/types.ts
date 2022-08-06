@@ -1,5 +1,10 @@
 import { ObjectId, Collection } from 'mongodb';
 
+export enum NodeEnv {
+  production = 'production',
+  development = 'development'
+}
+
 interface BookingsIndexMonth {
   [key: string]: boolean;
 }
