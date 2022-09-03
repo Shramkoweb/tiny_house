@@ -15,6 +15,7 @@ const seed = async () => {
       await db.users.insertOne(user);
     }
   } catch (error) {
+    console.error(error);
     throw new Error('failed to seed database');
   }
 

@@ -20,7 +20,10 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/host" element={<Host />} />
         <Route path="/listing/:id" element={<Listing />} />
-        <Route path="/listings/:location?" element={<Listings title="TinyHouse Listings" />} />
+        <Route path="/listings/">
+          <Route path=":location" element={<Listings title="TinyHouse Listings" />} />
+          <Route index element={<Listings title="TinyHouse Listings" />} />
+        </Route>
         <Route path="/user/:id" element={<User />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
