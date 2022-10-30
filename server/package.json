@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/Shramkoweb/tiny_house#readme",
   "dependencies": {
-    "apollo-server-core": "^3.10.2",
-    "apollo-server-express": "^3.10.2",
+    "apollo-server-core": "^3.10.3",
+    "apollo-server-express": "^3.10.3",
     "express": "^4.18.1",
     "graphql": "^16.5.0",
     "lodash.merge": "^4.6.2",
