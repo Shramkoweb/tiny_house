@@ -85,3 +85,6 @@ When visiting the user page of other users in the TinyHouse application, a user 
 other users.
 
 ![History of some user](https://d2uusema5elisf.cloudfront.net/courses/tinyhouse-react-masterclass-part-2/module_0/lesson_0.2/public/assets/tinyhouse-other-user-listings.png)
+
+
+Created by [Serhii Shramko](https://shramko.dev/). This is my personal website and blog. 
