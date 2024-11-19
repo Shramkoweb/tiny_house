@@ -4,7 +4,8 @@
   "author": "Serhii Shramko <shramko.dev@gmail.com>",
   "license": "ISC",
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "start": "nodemon src/index.ts",
+    "build": "tsc -p ./"
   },
   "dependencies": {
     "express": "^4.21.1"
