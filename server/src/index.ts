@@ -15,7 +15,7 @@ app.get("/listings", (req: Request, res: Response) => {
     res.send(listings);
 })
 
-app.get("/delete-listing", (req: Request, res: Response) => {
+app.post("/delete-listing", (req: Request, res: Response) => {
     const id: string = req.body.id;
 
     for (let i = 0; i < listings.length; i++) {
